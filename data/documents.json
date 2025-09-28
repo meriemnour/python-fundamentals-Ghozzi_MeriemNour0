@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "title": "Research Paper on AI",
+    "authors": ["Alice Smith", "Bob Johnson"],
+    "published": true,
+    "metadata": {
+      "pages": 15,
+      "conference": "NeurIPS"
+    },
+    "tags": ["machine learning", "neural networks"]
+  },
+  {
+    "id": 2,
+    "title": "Technical Report",
+    "authors": ["Charlie Brown"],
+    "published": false,
+    "tags": ["data analysis"]
+  },
+  {
+    "id": 3,
+    "title": "Literature Review",
+    "authors": ["Diana Prince", "Bruce Wayne"],
+    "published": true,
+    "metadata": {
+      "pages": 8,
+      "journal": "Science Review"
+    }
+  },
+  {
+    "id": 4,
+    "title": "Case Study",
+    "authors": ["Clark Kent"],
+    "published": true,
+    "tags": ["superman", "journalism"]
+  },
+  {
+    "id": 5,
+    "title": "Experimental Results",
+    "authors": ["Peter Parker", "Tony Stark"],
+    "published": true,
+    "metadata": {
+      "pages": 12,
+      "lab": "Stark Industries"
+    },
+    "tags": ["physics", "engineering"]
+  },
+  {
+    "id": 6,
+    "title": "Draft Proposal",
+    "authors": ["Steve Rogers"],
+    "published": false
+  },
+  {
+    "id": 7,
+    "title": "Conference Paper",
+    "authors": ["Natasha Romanoff", "Clint Barton"],
+    "published": true,
+    "metadata": {
+      "pages": 6
+    },
+    "tags": ["security", "espionage"]
+  },
+  {
+    "id": 8,
+    "title": "Thesis Document",
+    "authors": ["Wanda Maximoff"],
+    "published": true,
+    "metadata": {
+      "pages": 100,
+      "university": "Constructor University"
+    },
+    "tags": ["computer science", "magic"]
+  },
+  {
+    "id": 9,
+    "title": "Short Article",
+    "authors": ["Scott Lang"],
+    "published": true,
+    "tags": ["quantum", "heists"]
+  },
+  {
+    "id": 10,
+    "title": "Technical Documentation",
+    "authors": ["Carol Danvers"],
+    "published": true,
+    "metadata": {
+      "pages": 25,
+      "department": "Engineering"
+    },
+    "tags": ["space", "energy"]
+  }
+]
