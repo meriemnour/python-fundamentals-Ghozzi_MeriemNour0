@@ -1,5 +1,3 @@
-"""Simple document processor with type hints."""
-
 import json
 from typing import List, Optional
 
