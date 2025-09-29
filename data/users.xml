@@ -1,0 +1,23 @@
+<users>
+  <user>
+    <id>1</id>
+    <name>Alice Smith</name>
+    <email>alice@example.com</email>
+    <age>25</age>
+    <active>true</active>
+  </user>
+  <user>
+    <id>2</id>
+    <name>Bob Johnson</name>
+    <email>bob@example.com</email>
+    <age>30</age>
+    <active>false</active>
+  </user>
+  <user>
+    <id>3</id>
+    <name>Charlie Brown</name>
+    <email>charlie@example.com</email>
+    <age>35</age>
+    <active>true</active>
+  </user>
+</users>
