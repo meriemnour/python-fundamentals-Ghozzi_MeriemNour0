@@ -1,0 +1,6 @@
+pandas==2.3.2
+mypy==1.8.0
+ruff==0.13.0
+pre-commit==4.3.0
+pydantic==2.11.9
+typing_extensions>=4.0.0
