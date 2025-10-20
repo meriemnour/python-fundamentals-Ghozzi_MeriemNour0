@@ -1,0 +1,11 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: dataeng_mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: pyhton-de
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
