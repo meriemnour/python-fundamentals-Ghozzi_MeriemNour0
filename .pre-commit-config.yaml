@@ -10,3 +10,5 @@ repos:
     rev: v1.8.0
     hooks:
       - id: mypy
+        args: [--strict]
+        # Remove the additional_dependencies that require Rust
