@@ -11,4 +11,7 @@ repos:
     hooks:
       - id: mypy
         args: [--strict]
-        # Remove the additional_dependencies that require Rust
+        additional_dependencies:
+        - pydantic
+        - pandas-stubs
+        - types-sqlalchemy
