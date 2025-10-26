@@ -7,3 +7,6 @@ typing_extensions>=4.0.0
 numpy==2.3.3
 sqlalchemy[mypy]==2.0.43
 pymysql==1.1.2
+pymongo==3.13.0
+mongoengine==0.29.1
+pymongo-stubs==0.2.0
