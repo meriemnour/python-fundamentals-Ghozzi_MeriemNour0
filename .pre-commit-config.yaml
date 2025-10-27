@@ -15,3 +15,5 @@ repos:
         - pydantic
         - pandas-stubs
         - types-sqlalchemy
+        - pymongo[mypy]==4.15.3
+        - mongoengine==0.29.1
