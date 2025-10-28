@@ -14,7 +14,7 @@ from mongoengine import (
 )
 
 MONGO_URL = "mongodb://meriemnourG:secret2@localhost:27017/mongode?authSource=admin"
-connect("pythonde", host=MONGO_URL)
+connect("mongode", host=MONGO_URL)
 
 
 class Order(EmbeddedDocument):  # type: ignore[misc]
