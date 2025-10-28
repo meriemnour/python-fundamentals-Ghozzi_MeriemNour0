@@ -13,7 +13,7 @@ from mongoengine import (
     connect,
 )
 
-MONGO_URL = "mongodb://root:secret@localhost:27017/"
+MONGO_URL = "mongodb://meriemnourG:secret2@localhost:27017/mongode?authSource=admin"
 connect("pythonde", host=MONGO_URL)
 
 
