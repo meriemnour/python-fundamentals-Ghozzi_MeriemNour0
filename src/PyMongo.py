@@ -1,46 +1,112 @@
-from typing import Any, Dict, Optional
+from datetime import datetime
+from typing import Any, List, Optional
 
+from bson import ObjectId
 from pymongo import MongoClient
-from pymongo.collection import Collection
-from pymongo.database import Database
 
 MONGO_URL = "mongodb://meriemnourG:secret2@localhost:27017/mongode?authSource=admin"
+client: MongoClient[Any] = MongoClient(MONGO_URL)
+users_col = client.mongode.users
 
 
-def main() -> None:
-    client: MongoClient[Dict[str, Any]] = MongoClient(MONGO_URL)
-    db: Database[Dict[str, Any]] = client.mongode  # Add type parameter here
-    users_collection: Collection[Dict[str, Any]] = db.users
-
-    # Example CRUD operations
-    # Create
-    new_user: Dict[str, Any] = {
-        "username": "nour",
-        "email": "nour@example.com",
-        "age": 25,
+def create_user(
+    username: str,
+    email: str,
+    age: Optional[int] = None,
+    city: Optional[str] = None,
+    interests: Optional[List[str]] = None,
+) -> Any:
+    user_data = {
+        "username": username,
+        "email": email,
+        "profile": {"age": age, "city": city, "interests": interests or []},
+        "created_at": datetime.utcnow(),
     }
+    result = users_col.insert_one(user_data)
+    return result.inserted_id
 
-    # Insert user
-    result = users_collection.insert_one(new_user)
-    print(f"Inserted user with ID: {result.inserted_id}")
 
-    # Read
-    user: Optional[Dict[str, Any]] = users_collection.find_one({"username": "nour"})
-    if user:
-        print(f"Found user: {user}")
+def get_user(user_id: str) -> Optional[dict[str, Any]]:
+    return users_col.find_one({"_id": ObjectId(user_id)})
 
-    # Update
-    update_result = users_collection.update_one(
-        {"username": "nour"}, {"$set": {"age": 26}}
+
+def get_all_users() -> List[dict[str, Any]]:
+    return list(users_col.find())
+
+
+def update_user(
+    username: str,
+    email: Optional[str] = None,
+    age: Optional[int] = None,
+    city: Optional[str] = None,
+    interests: Optional[List[str]] = None,
+) -> bool:
+    update_data: dict[str, Any] = {}
+
+    if email is not None:
+        update_data["email"] = email
+
+    # Build profile updates
+    profile_updates: dict[str, Any] = {}
+    if age is not None:
+        profile_updates["age"] = age
+    if city is not None:
+        profile_updates["city"] = city
+    if interests is not None:
+        profile_updates["interests"] = interests
+
+    # If any profile fields are updated, add them to update_data
+    if profile_updates:
+        update_data["profile"] = profile_updates
+
+    result = users_col.update_one(
+        {"username": username},  # Find by username
+        {"$set": update_data},
     )
-    print(f"Updated {update_result.modified_count} documents")
+    return result.modified_count > 0
 
-    # Delete
-    delete_result = users_collection.delete_one({"username": "nour"})
-    print(f"Deleted {delete_result.deleted_count} documents")
 
-    client.close()
+def delete_user_by_username(username: str) -> bool:
+    result = users_col.delete_one({"username": username})
+    return result.deleted_count > 0
+
+
+def get_user_by_username(username: str) -> Optional[dict[str, Any]]:
+    return users_col.find_one({"username": username})
+
+
+# Add a new interest to user's interests array => pull operator
+def update_interests(user_id: str, new_interest: str) -> bool:
+    result = users_col.update_one(
+        {"_id": ObjectId(user_id)}, {"$push": {"profile.interests": new_interest}}
+    )
+    return result.modified_count > 0
 
 
 if __name__ == "__main__":
-    main()
+    #    user_id = create_user(
+    #        username="lolo",
+    #        email="lolo@gmail.com",
+    #        age=25,
+    #        city="germany",
+    #        interests=["music", "swimming"]
+    #    )
+    #    print(f"Created user with ID: {user_id}")
+
+    #    user = get_user(user_id)
+    #    print(f"User: {user}")
+
+    all_users = get_all_users()
+    for user in all_users:
+        print(f"User: {user['username']}, Email: {user['email']}")
+
+    update_success = update_user("mimou", age=26, city="Berlin")
+    print(f"Update successful: {update_success}")
+
+    # update_interests(user_id, "reading")
+
+    username_to_delete = input("\nEnter username to delete: ")
+    delete_success = delete_user_by_username(username_to_delete)
+    all_users = get_all_users()
+    for user in all_users:
+        print(f"User: {user['username']}, Email: {user['email']}")
