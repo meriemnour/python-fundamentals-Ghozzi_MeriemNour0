@@ -4,9 +4,9 @@ from typing import Any
 from pydantic import BaseModel, Field, TypeAdapter, field_validator
 from pymongo import MongoClient
 
-MONGO_URL = "mongodb://root:secret@localhost:27017/"
+MONGO_URL = "mongodb://meriemnourG:secret2@localhost:27017/mongode?authSource=admin"
 client: MongoClient[dict[str, Any]] = MongoClient(MONGO_URL)
-users_col = client.pythonde.users
+users_col = client.mongode.users
 
 
 class Profile(BaseModel):
