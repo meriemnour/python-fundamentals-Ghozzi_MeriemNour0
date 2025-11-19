@@ -12,6 +12,9 @@ from storage.relational_db import Session
 
 
 
+
+
+
 def export_from_db() -> None:
     with Session() as session:
         query = select(ScientificArticle)
@@ -22,7 +25,7 @@ def export_from_db() -> None:
 
             # Check if author exists
             if article.author is None:
-                print(f"  ⚠️  Article has no author, skipping: {article.title}")
+                print(f"Article has no author, skipping: {article.title}")
                 continue  # Skip articles without authors
 
             m_author = MongoAuthor(
@@ -36,6 +39,16 @@ def export_from_db() -> None:
             if os.path.exists(article.file_path):
                 try:
                     md_text = pymupdf4llm.to_markdown(article.file_path)
+                    kwargs= dict(
+                        db_id=article.id,
+                        title=article.title,
+                        summary=article.summary,
+                        file_path=article.file_path,
+                        created_at=article.created_at,
+                        arxiv_id=article.arxiv_id,
+                        author=m_author,
+                        text=md_text,
+                    )
                     print(f"  Converted PDF to markdown: {len(md_text)} characters")
                 except Exception as e:
                     print(f"  Warning: Could not convert PDF: {e}")
@@ -49,33 +62,27 @@ def export_from_db() -> None:
                 m_article = MongoArticle.objects.get(arxiv_id=article.arxiv_id)
                 # Update existing article
                 m_article.update(
-                    db_id=article.id,
-                    title=article.title,
-                    summary=article.summary,
-                    file_path=article.file_path,
-                    created_at=article.created_at,
-                    arxiv_id=article.arxiv_id,
-                    author=m_author,
-                    text=md_text,
+kwarg
                 )
-                print("  ✅ Updated existing article")
+                print("Updated existing article")
 
             except DoesNotExist:
                 # Create new article
                 m_article = MongoArticle(
-                    db_id=article.id,
-                    title=article.title,
-                    summary=article.summary,
-                    file_path=article.file_path,
-                    created_at=article.created_at,
-                    arxiv_id=article.arxiv_id,
-                    author=m_author,
-                    text=md_text,
+
                 )
                 m_article.save()
-                print("  ✅ Created new article")
+                print("Created new article")
 
-    print("🎉 Export completed successfully!")
+    print("Export completed successfully!")
+
+
+
+
+
+
+def export_from_db1() -> None:
+
 
 
 if __name__ == "__main__":

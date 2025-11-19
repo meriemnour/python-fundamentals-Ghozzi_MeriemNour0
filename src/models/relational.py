@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List, Optional
 
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -12,7 +13,10 @@ class Author(Base):
     full_name: Mapped[str] = mapped_column(String(100))
     title: Mapped[str] = mapped_column(String(100))
 
-    articles = relationship("ScientificArticle", back_populates="author")
+    articles: Mapped[List["ScientificArticle"]] = relationship(
+        "ScientificArticle", 
+        back_populates="author"
+    )
 
 
 class ScientificArticle(Base):
@@ -23,8 +27,10 @@ class ScientificArticle(Base):
     summary: Mapped[str] = mapped_column(String(500))
     file_path: Mapped[str] = mapped_column(String(200))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-
     arxiv_id: Mapped[str] = mapped_column(String(50), unique=True)
 
-    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), nullable=True)
-    author = relationship("Author", back_populates="articles")
+    author_id: Mapped[Optional[int]] = mapped_column(ForeignKey("authors.id"), nullable=True)
+    author: Mapped[Optional["Author"]] = relationship(
+        "Author", 
+        back_populates="articles"
+    )
