@@ -14,8 +14,7 @@ class Author(Base):
     title: Mapped[str] = mapped_column(String(100))
 
     articles: Mapped[List["ScientificArticle"]] = relationship(
-        "ScientificArticle", 
-        back_populates="author"
+        "ScientificArticle", back_populates="author"
     )
 
 
@@ -29,8 +28,9 @@ class ScientificArticle(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     arxiv_id: Mapped[str] = mapped_column(String(50), unique=True)
 
-    author_id: Mapped[Optional[int]] = mapped_column(ForeignKey("authors.id"), nullable=True)
+    author_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("authors.id"), nullable=True
+    )
     author: Mapped[Optional["Author"]] = relationship(
-        "Author", 
-        back_populates="articles"
+        "Author", back_populates="articles"
     )
