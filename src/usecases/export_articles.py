@@ -6,17 +6,16 @@ from models.mongo import ScientificArticle as MongoArticle
 from models.pandas import ScientificArticle
 from mongoengine import DoesNotExist
 from typing import Optional
-from pathlib import Path  # Add this import
+from pathlib import Path
 
 
-def save_article(article: ScientificArticle) -> Optional[MongoArticle]:
+def save_article(article: pd.Series) -> pd.Series:
     try:
         m_author = MongoAuthor(
             db_id=article.author_db_id,
             full_name=article.author_full_name,
             author_title=article.author_title,
         )
-        
         
         file_path = Path(article.file_path)
         if not file_path.exists():
@@ -45,23 +44,14 @@ def save_article(article: ScientificArticle) -> Optional[MongoArticle]:
             m_article.save()
         
         print(f"success :{article.arxiv_id}")
-        return m_article
+        return pd.Series([m_article.id], index=["mongo_db_id"])
     except Exception as e:
         print(f"Failure :{e}")
-        return None
+        return pd.Series([""], index=["mongo_db_id"])
 
 
 def create_in_mongo(df: pd.DataFrame) -> pd.DataFrame:
-    new_articles = []
-    for article in df.to_records():
-        m_article = save_article(article)
-        if m_article:
-            new_articles.append(m_article)
-
-    
-    if new_articles:
-        df["mongo_id"] = [str(a.id) for a in new_articles]
-    else:
-        df["mongo_id"] = ""  
-    
+    ids = df.apply(save_article, axis=1)
+    ids.name = 'mongo_id'
+    df = pd.concat([df, ids], axis=1)    
     return df
