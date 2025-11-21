@@ -1,36 +1,40 @@
 from datetime import datetime
-from typing import List, Optional
 
-from sqlalchemy import DateTime, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from storage.relational_db import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base, relationship
 
+Base = declarative_base()
 
 class Author(Base):
     __tablename__ = "authors"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    full_name: Mapped[str] = mapped_column(String(100))
-    title: Mapped[str] = mapped_column(String(100))
+    id = Column(Integer, primary_key=True)
+    full_name = Column(String(100))
+    title = Column(String(100))
 
-    articles: Mapped[List["ScientificArticle"]] = relationship(
-        "ScientificArticle", back_populates="author"
-    )
+    articles = relationship("ScientificArticle", back_populates="author")
+
+    def __init__(self, full_name: str, title: str) -> None:
+        self.full_name = full_name
+        self.title = title
 
 
 class ScientificArticle(Base):
     __tablename__ = "scientific_articles"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(String(200))
-    summary: Mapped[str] = mapped_column(String(500))
-    file_path: Mapped[str] = mapped_column(String(200))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    arxiv_id: Mapped[str] = mapped_column(String(50), unique=True)
+    id = Column(Integer, primary_key=True)
+    title = Column(String(200))
+    summary = Column(String(500))
+    file_path = Column(String(200))
+    created_at = Column(DateTime, default=datetime.now)
+    arxiv_id = Column(String(50), unique=True)
 
-    author_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("authors.id"), nullable=True
-    )
-    author: Mapped[Optional["Author"]] = relationship(
-        "Author", back_populates="articles"
-    )
+    author_id = Column(Integer, ForeignKey("authors.id"), nullable=True)
+    author = relationship("Author", back_populates="articles")
+
+    def __init__(self, title: str, summary: str, file_path: str, arxiv_id: str, author=None) -> None:
+        self.title = title
+        self.summary = summary
+        self.file_path = file_path
+        self.arxiv_id = arxiv_id
+        self.author = author
