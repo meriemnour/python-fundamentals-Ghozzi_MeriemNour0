@@ -5,6 +5,8 @@ from models.relational import Author, ScientificArticle
 from sqlalchemy.exc import IntegrityError
 from storage.relational_db import Session
 
+pd.set_option("display.max_columns", None)
+
 
 def save_articles(line: pd.Series) -> pd.Series:
     with Session() as session:
@@ -49,7 +51,34 @@ def load_data_from_csv(path: str) -> pd.DataFrame:
 
 
 def load_from_xml(path: str) -> pd.DataFrame:
-    return pd.read_xml(Path(path))
+    df = pd.read_xml(
+        Path(path),
+        xpath="/atom:feed/atom:entry",
+        namespaces={"atom": "http://www.w3.org/2005/Atom"},
+    )[["id", "title", "summary"]]
+
+    df["author_title"] = "PhD"
+
+    links_df = pd.read_xml(
+        Path(path),
+        xpath="/atom:feed/atom:entry/atom:link[@type='application/pdf']",
+        namespaces={"atom": "http://www.w3.org/2005/Atom"},
+    )["href"]
+
+    authors_df = pd.read_xml(
+        Path(path),
+        xpath="/atom:feed/atom:entry/atom:author[1]",
+        namespaces={"atom": "http://www.w3.org/2005/Atom"},
+    )["name"]
+
+    return pd.concat(
+        [
+            df.rename(columns={"id": "arxiv_id"}),
+            links_df.rename("file_path"),
+            authors_df.rename("author_full_name"),
+        ],
+        axis=1,
+    )
 
 
 def create_in_relational_db(df: pd.DataFrame) -> pd.DataFrame:
