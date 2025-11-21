@@ -6,7 +6,7 @@ from usecases.search_text import search_text_index
 
 if __name__ == "__main__":
     df = (
-        load_data_from_csv(Path("data/articles.csv"))  # Convert string to Path
+        load_data_from_csv(Path("data/articles.csv")) 
         .pipe(create_in_relational_db)
         .pipe(create_in_mongo)
     )
