@@ -1,0 +1,45 @@
+exit()
+db.users.find()
+db.find()
+use mongode
+exit()
+db.users.find()
+])
+  }
+    created_at: new Date()
+    },
+      interest: ["dance", "music"]
+      city: "tunis",
+      age: 28,
+    profile: {
+    email: "meriem@gmail.com",
+    username: "meriem",
+  {
+db.users.insertMany([ 
+use mongode
+exit()
+db.users.find()
+]);
+  }
+    created_at: new Date()
+    },
+      interest: ["dance", "music"]
+      city: "tunis",
+      age: 28,
+    profile: {
+    email: "meriem@gmail.com",
+    username: "meriem",
+  { 
+ db.users.insertMany([ 
+exit()
+db.users.find().pretty()
+db.users.updateOne({'username': 'meriem'},{$set : {'profile.age': 30}})
+db.users.updateOne({'username': 'meriem'},{$set : {'profile.age': 30})
+db.users.updateOne({'username': 'meriem'},{$set : {'profile':{age: 30}})
+... age: 30}})
+db.users.updateOne({'username': 'meriem'},{$set : {'profile:{
+db.runCommand({listCollections: 1})
+db.users.insertMany([{ username: "meriem", email: "meriem@gmail.com", profile: { age: 28, city: "tunis", interest: ["dance", "music"] }, created_at: new Date() }]);
+db.users.insertMany([ { username :"meriem" email: "meriem@gmail.com"
+db.runCommand({listCollections: 1})
+db = db.getSiblingDB('mongode')

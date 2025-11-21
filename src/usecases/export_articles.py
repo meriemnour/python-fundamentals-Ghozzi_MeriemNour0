@@ -22,13 +22,17 @@ def save_article(article: pd.Series[Any]) -> pd.Series[Any]:
             print(f"File not found, skipping: {article.file_path}")
             md_text = ""
         else:
-            md_text = pymupdf4llm.to_markdown(article.file_path)
+            try:
+                md_text = pymupdf4llm.to_markdown(str(file_path))
+            except Exception as e:
+                print(f"Error processing PDF {file_path}: {e}")
+                md_text = ""
 
         kwargs = {
             "db_id": article.db_id,
             "title": article.title,
             "summary": article.summary,
-            "file_path": article.file_path,
+            "file_path": str(article.file_path),
             "arxiv_id": article.arxiv_id,
             "author": m_author,
             "text": md_text,
@@ -43,15 +47,16 @@ def save_article(article: pd.Series[Any]) -> pd.Series[Any]:
             m_article = MongoArticle(**kwargs)
             m_article.save()
 
-        print(f"success :{article.arxiv_id}")
+        print(f"success: {article.arxiv_id}")
         mongo_db_id: str = str(m_article.id)
         return pd.Series([mongo_db_id], index=["mongo_db_id"])
     except Exception as e:
-        print(f"Failure :{e}")
+        print(f"Failure processing {article.arxiv_id}: {e}")
         return pd.Series([""], index=["mongo_db_id"])
 
 
 def create_in_mongo(df: pd.DataFrame) -> pd.DataFrame:
+    print(f"Processing {len(df)} articles into MongoDB...")
     ids = df.apply(save_article, axis=1)
     ids.name = "mongo_id"
     df = pd.concat([df, ids], axis=1)

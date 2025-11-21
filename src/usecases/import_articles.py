@@ -9,15 +9,20 @@ from storage.relational_db import Session
 def save_articles(line: pd.Series) -> pd.Series:
     with Session() as session:
         try:
-            existing_article = session.query(ScientificArticle).filter_by(arxiv_id=line["arxiv_id"]).first()
+            existing_article = (
+                session.query(ScientificArticle)
+                .filter_by(arxiv_id=line["arxiv_id"])
+                .first()
+            )
             if existing_article:
                 print(f"Article already exists: {line['arxiv_id']}")
-                return pd.Series([existing_article.id, existing_article.author.id], 
-                               index=["db_id", "author_db_id"])
+                return pd.Series(
+                    [existing_article.id, existing_article.author.id],
+                    index=["db_id", "author_db_id"],
+                )
 
             author = Author(
-                full_name=line["author_full_name"], 
-                title=line["author_title"]
+                full_name=line["author_full_name"], title=line["author_title"]
             )
 
             article = ScientificArticle(
@@ -39,8 +44,12 @@ def save_articles(line: pd.Series) -> pd.Series:
             return pd.Series([0, 0], index=["db_id", "author_db_id"])
 
 
-def load_data_from_csv(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, delimiter=";", dtype="string")
+def load_data_from_csv(path: str) -> pd.DataFrame:
+    return pd.read_csv(Path(path), delimiter=";", dtype="string")
+
+
+def load_from_xml(path: str) -> pd.DataFrame:
+    return pd.read_xml(Path(path))
 
 
 def create_in_relational_db(df: pd.DataFrame) -> pd.DataFrame:
