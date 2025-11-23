@@ -16,12 +16,7 @@ def search_text_index(keyword: str) -> List[Dict[str, Union[str, float]]]:
     if not keyword.startswith('"'):
         keyword = f'"{keyword}"'
 
-    pipeline = [
-        {"$match": {"$text": {"$search": keyword}}},
-        {"$addFields": {"text_score": {"$meta": "textScore"}}},
-        {"$sort": {"text_score": -1}},
-        {"$project": {"arxiv_id": 1, "title": 1, "text_score": 1}},
-    ]
+
 
     results = list(ScientificArticle._get_collection().aggregate(pipeline))
     return results
