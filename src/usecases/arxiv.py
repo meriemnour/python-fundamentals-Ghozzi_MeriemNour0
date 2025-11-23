@@ -10,7 +10,7 @@ def fetch_arxiv_articles(search_query: str, max_results: int = 10) -> pd.DataFra
     params = {
         "search_query": search_query,
         "start": 0,
-        "max_results": max_results,  # Fixed: use the parameter
+        "max_results": max_results,  
     }
 
     response = requests.get(url, params=params)
