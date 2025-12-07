@@ -1,5 +1,5 @@
-from xml.etree import ElementTree as ET
 from typing import Any
+from xml.etree import ElementTree as ET
 
 import pandas as pd
 import requests
@@ -56,6 +56,41 @@ def fetch_arxiv_articles(search_query: str, max_results: int = 10) -> pd.DataFra
 
     df = pd.DataFrame(articles_data).astype("string")
     return df
+
+def load_from_xml(xml_data: str) -> pd.DataFrame:
+    file_like = io.StringIO(xml_data)
+    df = pd.read_xml(
+        file_like,
+        xpath="/atom:feed/atom:entry",
+        namespaces={"atom": "http://www.w3.org/2005/Atom"},
+    )[["id", "title", "summary"]]
+
+    df["author_title"] = "PhD"
+
+    file_like = io.StringIO(xml_data)
+
+    links_df = pd.read_xml(
+        file_like,
+        xpath="/atom:feed/atom:entry/atom:link[@title='pdf']",
+        namespaces={"atom": "http://www.w3.org/2005/Atom"},
+    )["href"]
+
+    file_like = io.StringIO(xml_data)
+
+    authors_df = pd.read_xml(
+        file_like,
+        xpath="/atom:feed/atom:entry/atom:author[1]",
+        namespaces={"atom": "http://www.w3.org/2005/Atom"},
+    )["name"]
+
+    return pd.concat(
+        [
+            df.rename(columns={"id": "arxiv_id"}),
+            links_df.rename("file_path"),
+            authors_df.rename("author_full_name"),
+        ],
+        axis=1,
+    )
 
 
 if __name__ == "__main__":
