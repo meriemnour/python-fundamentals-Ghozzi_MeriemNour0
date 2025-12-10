@@ -1,4 +1,6 @@
 from pathlib import Path
+import pymupdf4llm
+
 from typing import Any
 from urllib.parse import urlparse
 
@@ -40,7 +42,11 @@ def download_file(article: pd.Series[Any]) -> pd.Series[Any]:
         new_path = article.file_path
 
     return pd.Series([new_path], index=["local_file_path"])
-
+def convert_article_to_markdown(article: pd.Series) -> pd.Series:
+    md_text = pymupdf4llm.to_markdown(article.local_file_path)
+    with open(f"{article.local_file_path}.md", "w") as f:
+        f.write(md_text)
+    return pd.Series([md_text], index=["md_text"], dtype="string")
 
 def save_article(article: pd.Series[Any]) -> pd.Series[Any]:
     try:
@@ -109,4 +115,10 @@ def download_html_article(row: pd.Series[Any]) -> str | None:
 
 def add_html_content(df: pd.DataFrame) -> pd.DataFrame:
     df["html_content"] = df.apply(download_html_article, axis=1)
+    return df
+
+
+def convert_to_markdown(df: pd.DataFrame) -> pd.DataFrame:
+    texts = df.progress_apply(convert_article_to_markdown, axis=1)  # type: ignore[operator]
+    df = pd.concat([df, texts], axis=1)
     return df
